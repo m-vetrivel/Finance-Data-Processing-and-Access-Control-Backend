@@ -21,8 +21,8 @@ Java 21, Spring Boot 3.4, H2, and JWT.
 
 ## Quick Start
 ```bash
-git clone https://github.com/YOUR_USERNAME/finance-dashboard.git
-cd finance-dashboard
+git clone https://github.com/m-vetrivel/Finance-Data-Processing-and-Access-Control-Backend.git
+cd Finance-Data-Processing-and-Access-Control-Backend
 mvn spring-boot:run
 ```
 
