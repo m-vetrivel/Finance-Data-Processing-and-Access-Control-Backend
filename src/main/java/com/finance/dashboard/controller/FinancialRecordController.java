@@ -44,14 +44,25 @@ public class FinancialRecordController {
                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam(required = false)
                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
-            @RequestParam(defaultValue = "0")   int page,
-            @RequestParam(defaultValue = "10")  int size,
+            @RequestParam(defaultValue = "0")    int page,
+            @RequestParam(defaultValue = "10")   int size,
             @RequestParam(defaultValue = "date") String sortBy,
             @RequestParam(defaultValue = "desc") String direction) {
 
         return ResponseEntity.ok(
                 recordService.getAll(type, category, from, to,
                         page, size, sortBy, direction));
+    }
+
+    @Operation(summary = "Search records by keyword in notes — ALL roles")
+    @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('VIEWER','ANALYST','ADMIN')")
+    public ResponseEntity<PageResponse<FinancialRecordResponse>> search(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0")  int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(
+                recordService.search(keyword, page, size));
     }
 
     @Operation(summary = "Get record by ID — ALL roles")

@@ -35,6 +35,16 @@ public interface FinancialRecordRepository extends JpaRepository<FinancialRecord
             Pageable pageable
     );
 
+    @Query("""
+    SELECT r FROM FinancialRecord r
+    WHERE r.deleted = false
+      AND (:keyword IS NULL
+           OR LOWER(r.notes) LIKE LOWER(CONCAT('%', :keyword, '%')))
+    """)
+    Page<FinancialRecord> searchByKeyword(
+        @Param("keyword") String keyword,
+        Pageable pageable);
+
     // dashboard aggregates
     @Query("SELECT COALESCE(SUM(r.amount), 0) FROM FinancialRecord r WHERE r.deleted = false AND r.type = :type")
     BigDecimal sumByType(@Param("type") TransactionType type);
@@ -57,6 +67,17 @@ public interface FinancialRecordRepository extends JpaRepository<FinancialRecord
         ORDER BY FUNCTION('YEAR', r.date), FUNCTION('MONTH', r.date)
         """)
     java.util.List<Object[]> monthlyTrends(@Param("from") LocalDate from);
+
+    @Query("""
+    SELECT FUNCTION('YEAR', r.date), FUNCTION('WEEK', r.date),
+           r.type, COALESCE(SUM(r.amount), 0)
+    FROM FinancialRecord r
+    WHERE r.deleted = false
+      AND r.date >= :from
+    GROUP BY FUNCTION('YEAR', r.date), FUNCTION('WEEK', r.date), r.type
+    ORDER BY FUNCTION('YEAR', r.date), FUNCTION('WEEK', r.date)
+    """)
+    java.util.List<Object[]> weeklyTrends(@Param("from") LocalDate from);
 
     // find by id only if not soft-deleted
     @Query("SELECT r FROM FinancialRecord r WHERE r.id = :id AND r.deleted = false")

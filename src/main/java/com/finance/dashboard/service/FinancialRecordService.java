@@ -114,4 +114,16 @@ public class FinancialRecordService {
                         "Authenticated user not found",
                         HttpStatus.UNAUTHORIZED));
     }
+
+    // ── Search by keyword ─────────────────────────────
+        public PageResponse<FinancialRecordResponse> search(
+                String keyword, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size,
+                Sort.by("date").descending());
+
+        return PageResponse.from(
+                recordRepository.searchByKeyword(keyword, pageable)
+                        .map(FinancialRecordResponse::from));
+        }
 }

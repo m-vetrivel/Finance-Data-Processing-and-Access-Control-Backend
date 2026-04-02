@@ -9,5 +9,6 @@ public record DashboardSummary(
         BigDecimal netBalance,
         List<CategorySummary> categoryBreakdown,
         List<MonthlyTrend> monthlyTrends,
+        List<WeeklyTrend> weeklyTrends, 
         List<FinancialRecordResponse> recentActivity
 ) {}
